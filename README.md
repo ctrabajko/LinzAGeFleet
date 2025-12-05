@@ -72,6 +72,7 @@ Endpoints documented in:
 
 - Simple operator panel listing **upcoming bookings** for the next 24 hours.
 - Shows key details (time, origin, destination, wheelchair count, assistance level).
+- Each booking is automatically assigned to one of **three demo e‑vans** using a simple load‑balancing dispatcher (fake dispatch).
 
 ---
 
@@ -338,7 +339,7 @@ On validation error:
 
 ### 7.4. `GET /api/bookings`
 
-List all upcoming bookings (used by the operator view).
+List all upcoming bookings (used by the operator view and fake dispatcher).
 
 - **Response (JSON)**:
 
@@ -353,12 +354,14 @@ List all upcoming bookings (used by the operator view).
     "time": "17:45",
     "wheelchairCount": 1,
     "assistanceLevel": "extra_time",
-    "status": "confirmed"
+    "status": "confirmed",
+    "vehicleId": "EV-01",
+    "vehicleName": "E‑Van 1 – Central"
   }
 ]
 ```
 
-The list is sorted by date/time and only includes **future** bookings.
+The list is sorted by date/time and only includes **future** bookings. In addition, each booking is assigned to one of three demo vehicles (`EV-01`, `EV-02`, `EV-03`) using a simple load‑balancing algorithm that prefers vehicles with enough wheelchair capacity.
 
 ---
 
@@ -398,3 +401,147 @@ The list is sorted by date/time and only includes **future** bookings.
     and <http://data.linz.gv.at/nutzungsbedingungen/>.
 
 Please check these terms before using the system outside of a hackathon context.
+
+---
+
+## 11. Optional WhatsApp Voice Booking (n8n + OpenAI + ElevenLabs + Twilio)
+
+For people who cannot comfortably use a keyboard or screen, you can add a **voice-based booking path via WhatsApp** using low-code tooling. The idea:
+
+- User sends a **voice message** to a WhatsApp number.
+- A workflow in **n8n**:
+  - Receives the audio via **Twilio**.
+  - Transcribes and understands it using **OpenAI**.
+  - Calls this backend (`/api/bookings`) to create a booking.
+  - Generates a spoken confirmation with **ElevenLabs**.
+  - Sends the audio (and text) back to the user on WhatsApp.
+
+### 11.1. High-level flow
+
+1. **User** sends a voice note to a Twilio WhatsApp number.
+2. **Twilio** forwards the message (and media URL) to an **n8n webhook**.
+3. **n8n**:
+   1. Downloads the audio file from Twilio’s media URL.
+   2. Sends audio to **OpenAI (Whisper)** for speech-to-text.
+   3. Sends the transcript + conversation history to **OpenAI Chat** to extract:
+      - name, email (optional, or phone as identifier),
+      - origin stop/place,
+      - destination stop/place,
+      - date, time,
+      - wheelchairCount,
+      - assistanceLevel,
+      - notes.
+   4. n8n calls this app’s `POST /api/bookings` endpoint with the structured JSON.
+   5. Receives the booking JSON (with `id`, `vehicleId`, etc.).
+   6. Asks **OpenAI Chat** to produce a short confirmation sentence in the user’s language (DE/EN).
+   7. Sends that text to **ElevenLabs TTS** → gets an audio file with the spoken confirmation.
+   8. Uses **Twilio** again to send a WhatsApp message back to the user with:
+      - the text confirmation, and
+      - the audio confirmation as a voice note.
+
+### 11.2. Suggested n8n nodes (one run)
+
+1. **Webhook / Twilio Trigger**
+   - Method: `POST`
+   - URL: `https://<your-n8n>/webhook/whatsapp-inbound`
+   - Configure Twilio WhatsApp Sandbox / number to call this URL for incoming messages.
+   - This node receives parameters like:
+     - `From` (user phone),
+     - `Body` (text if any),
+     - `NumMedia` and media URLs for voice notes.
+
+2. **IF node – has audio?**
+   - Check if `NumMedia > 0` and `MediaContentType0` starts with `audio/`.
+   - If no audio:
+     - (Optional) handle text-only booking or reply asking user to send a voice note.
+
+3. **HTTP Request – Download audio**
+   - GET `{{$json["MediaUrl0"]}}`
+   - Authentication: Twilio Basic Auth (Account SID + Auth Token) or public media URL depending on Twilio settings.
+   - Response: binary (audio).
+
+4. **OpenAI – Audio Transcription (Whisper)**
+   - Use the n8n **OpenAI** node in “Audio to Text” mode.
+   - Input: binary audio from previous step.
+   - Output: `transcript` string.
+
+5. **OpenAI – Booking intent + extraction**
+   - OpenAI Chat (GPT‑4 or similar).
+   - System prompt example:
+
+     > You are an assistant for \"Linz Accessible E‑Fleet\" in Linz, Austria.  
+     > The user is leaving a voicemail on WhatsApp to book a wheelchair-accessible e-vehicle that connects to Linz AG public transport.  
+     > Ask follow-up questions if needed, then output ONLY a JSON object with fields:  
+     > `name`, `email` (optional), `origin`, `destination`, `date`, `time`, `wheelchairCount`, `assistanceLevel`, `notes`.  
+     > `assistanceLevel` must be one of: `standard`, `extra_time`, `with_assistant`.  
+     > Dates should be today or tomorrow only and formatted as `YYYY-MM-DD`. Times as `HH:MM` (24h).  
+     > If you are missing information, ask a short, clear question in the user’s language (German or English).
+
+   - User message: the transcript plus any stored context from previous messages (n8n can store per-user state in a database or [n8n Data Storage] node keyed by `From`).
+   - Output: final structured JSON once all info is gathered.
+
+6. **HTTP Request – Call backend**
+   - Method: `POST`
+   - URL: `http://<your-backend-host>:3000/api/bookings`
+   - Body (JSON): map fields from the LLM output to the booking format:
+     - `name`
+     - `email`
+     - `fromStopName` = `origin`
+     - `toStopName` = `destination`
+     - `date`
+     - `time`
+     - `wheelchairCount`
+     - `assistanceLevel`
+     - `notes`
+   - To resolve `fromStopId` / `toStopId`, you can optionally call this app’s `/api/stops?q=...` from n8n before calling `/api/bookings` (pick the best match’s `id`).
+
+7. **OpenAI – Confirmation text**
+   - System prompt: “You are a friendly but concise booking confirmation assistant for Linz Accessible E‑Fleet.”
+   - Input: booking JSON from backend.
+   - Output example (EN):
+
+     > Your accessible e‑fleet ride is booked for today at 17:45 from Linz/Donau, Hauptbahnhof to Linz/Donau, JKU | Universität. Vehicle EV‑01 has been assigned.
+
+   - And German variant for German-speaking callers.
+
+8. **ElevenLabs – Text to Speech**
+   - Use ElevenLabs API (via n8n HTTP Request node or a dedicated node if available).
+   - Method: `POST`
+   - URL: `https://api.elevenlabs.io/v1/text-to-speech/<voice_id>`
+   - Headers:
+     - `xi-api-key: {{ $env.ELEVENLABS_API_KEY }}`
+     - `Content-Type: application/json`
+   - Body:
+
+     ```json
+     {
+       "text": "{{ $json.confirmationText }}",
+       "model_id": "eleven_multilingual_v2"
+     }
+     ```
+
+   - Response: binary audio (MP3/OGG).
+
+9. **Twilio – Send WhatsApp message (text + audio)**
+   - Text: confirmation text from previous step.
+   - Media: audio file from ElevenLabs.
+   - Use Twilio node or HTTP Request to Twilio’s `/Messages.json`:
+     - `To`: user’s WhatsApp number (from `From`).
+     - `From`: your Twilio WhatsApp-enabled number.
+     - `Body`: text confirmation.
+     - `MediaUrl`: a URL where n8n exposes the ElevenLabs audio (e.g. n8n “Static file” or an S3 bucket).
+
+### 11.3. Required configuration
+
+Environment / secrets:
+
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`
+- `TWILIO_WHATSAPP_NUMBER`
+- `OPENAI_API_KEY`
+- `ELEVENLABS_API_KEY`
+- `BACKEND_BASE_URL` (e.g. `http://localhost:3000` or your deployed URL)
+- n8n base URL reachable by Twilio.
+
+---
+
+This voice workflow is **optional** and lives entirely in n8n; the backend in this repo does not depend on it. It simply exposes clean JSON endpoints (`/api/stops`, `/api/departures`, `/api/bookings`) that the n8n flow can call to turn WhatsApp voice messages into real bookings.

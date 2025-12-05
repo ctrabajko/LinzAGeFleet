@@ -11,6 +11,43 @@ const EFA_BASE_URL = process.env.EFA_BASE_URL || "http://www.linzag.at/static";
 // In-memory booking storage for demo purposes
 const bookings = [];
 
+// Simple demo fleet for fake dispatching
+const fleet = [
+  { id: "EV-01", name: "E\u2011Van 1 \u2013 Central", maxWheelchairs: 2 },
+  { id: "EV-02", name: "E\u2011Van 2 \u2013 North", maxWheelchairs: 2 },
+  { id: "EV-03", name: "E\u2011Van 3 \u2013 South", maxWheelchairs: 1 },
+];
+
+/**
+ * Assign a booking to the vehicle with the smallest number of upcoming trips,
+ * preferring vehicles that can handle the requested wheelchair count.
+ */
+function assignVehicle(booking) {
+  if (!fleet.length) {
+    return null;
+  }
+
+  const now = new Date();
+
+  const loads = fleet.map((vehicle) => {
+    const upcomingForVehicle = bookings.filter((b) => {
+      if (b.vehicleId !== vehicle.id) return false;
+      const ts = new Date(`${b.date}T${b.time}:00`);
+      return !Number.isNaN(ts.getTime()) && ts >= now;
+    }).length;
+
+    return { vehicle, count: upcomingForVehicle };
+  });
+
+  loads.sort((a, b) => a.count - b.count);
+
+  const byCapacity =
+    loads.find((entry) => booking.wheelchairCount <= entry.vehicle.maxWheelchairs) ||
+    loads[0];
+
+  return byCapacity.vehicle;
+}
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -213,6 +250,12 @@ app.post("/api/bookings", (req, res) => {
     notes: notes || "",
     status: "confirmed",
   };
+
+  const vehicle = assignVehicle(booking);
+  if (vehicle) {
+    booking.vehicleId = vehicle.id;
+    booking.vehicleName = vehicle.name;
+  }
 
   bookings.push(booking);
 
