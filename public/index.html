@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Linz Accessible E-Fleet Booking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Accessible e-fleet booking prototype for Linz AG with wheelchair-friendly options and public transport integration."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <div>
+          <h1>Linz Accessible E‑Fleet</h1>
+          <p class="tagline">
+            Book wheelchair‑friendly electric vehicles that connect seamlessly
+            to Linz AG public transport.
+          </p>
+        </div>
+        <div class="accessibility-toolbar" aria-label="Accessibility tools">
+          <button type="button" id="toggle-contrast">High contrast</button>
+          <button type="button" id="increase-font">A+</button>
+          <button type="button" id="decrease-font">A−</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section aria-labelledby="intro-heading" class="section intro">
+        <h2 id="intro-heading">Why this project?</h2>
+        <p>
+          Many wheelchair users cannot use standard ride‑sharing or taxis
+          because vehicles do not support ramps or secure wheelchair
+          positions. Our prototype bridges that gap:
+        </p>
+        <ul>
+          <li>On‑demand booking of e‑vehicles equipped with ramps.</li>
+          <li>
+            Explicit capture of accessibility needs (number of wheelchairs,
+            assistance level).
+          </li>
+          <li>
+            Integration with Linz AG’s
+            <abbr title="Elektronische Fahrplanauskunft">EFA</abbr> API to show
+            real‑time departures at your origin stop.
+          </li>
+        </ul>
+      </section>
+
+      <section
+        aria-labelledby="booking-heading"
+        class="section booking-section"
+      >
+        <h2 id="booking-heading">Book an accessible E‑Fleet ride</h2>
+
+        <p class="section-description">
+          Bookings can be made for rides today or up to one day in advance.
+          All vehicles have ramps and secure spaces for wheelchair users.
+        </p>
+
+        <form id="booking-form" novalidate>
+          <fieldset>
+            <legend>Your details</legend>
+            <div class="field">
+              <label for="name">Name<span aria-hidden="true">*</span></label>
+              <input id="name" name="name" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="email"
+                >Email<span aria-hidden="true">*</span></label
+              >
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                placeholder="+43 …"
+              />
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Trip details</legend>
+            <p class="hint">
+              Choose origin and destination from Linz AG stops or important
+              places. Suggestions come directly from the Linz AG EFA API.
+            </p>
+
+            <div class="field">
+              <label for="fromStopName"
+                >Pickup stop / place<span aria-hidden="true">*</span></label
+              >
+              <input
+                id="fromStopName"
+                name="fromStopName"
+                list="fromStopList"
+                autocomplete="off"
+                aria-describedby="fromStopHint"
+                required
+              />
+              <datalist id="fromStopList"></datalist>
+              <p class="hint" id="fromStopHint">
+                Start typing “Hauptbahnhof”, “JKU”, “solarCity”… and select a
+                suggestion.
+              </p>
+              <input type="hidden" id="fromStopId" name="fromStopId" />
+            </div>
+
+            <div class="field">
+              <label for="toStopName"
+                >Destination stop / place<span aria-hidden="true">*</span></label
+              >
+              <input
+                id="toStopName"
+                name="toStopName"
+                list="toStopList"
+                autocomplete="off"
+                aria-describedby="toStopHint"
+                required
+              />
+              <datalist id="toStopList"></datalist>
+              <p class="hint" id="toStopHint">
+                Start typing your destination and pick one of the suggestions.
+              </p>
+              <input type="hidden" id="toStopId" name="toStopId" />
+            </div>
+
+            <div class="field field-inline">
+              <div>
+                <label for="date"
+                  >Date<span aria-hidden="true">*</span></label
+                >
+                <input id="date" name="date" type="date" required />
+              </div>
+              <div>
+                <label for="time"
+                  >Pickup time<span aria-hidden="true">*</span></label
+                >
+                <input id="time" name="time" type="time" required />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Accessibility needs</legend>
+            <div class="field">
+              <label for="wheelchairCount"
+                >Number of wheelchair users</label
+              >
+              <input
+                id="wheelchairCount"
+                name="wheelchairCount"
+                type="number"
+                min="0"
+                max="4"
+                value="1"
+              />
+            </div>
+
+            <div class="field">
+              <label for="assistanceLevel">Assistance level</label>
+              <select id="assistanceLevel" name="assistanceLevel">
+                <option value="standard">Standard – ramp and secure space</option>
+                <option value="extra_time">
+                  Extra time for boarding / alighting
+                </option>
+                <option value="with_assistant">
+                  Needs driver to assist with wheelchair
+                </option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="notes">Additional notes for the driver</label>
+              <textarea
+                id="notes"
+                name="notes"
+                rows="3"
+                placeholder="E.g. service dog, oxygen equipment, transfer requirements…"
+              ></textarea>
+            </div>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" id="submitBooking">
+              Book accessible ride
+            </button>
+            <p
+              id="formMessage"
+              class="form-message"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </div>
+        </form>
+      </section>
+
+      <section
+        aria-labelledby="departures-heading"
+        class="section departures-section"
+      >
+        <div class="section-header">
+          <h2 id="departures-heading">
+            Live departures from your pickup stop (Linz AG)
+          </h2>
+          <button
+            type="button"
+            id="refreshDepartures"
+            class="secondary-button"
+          >
+            Refresh departures
+          </button>
+        </div>
+        <p class="section-description">
+          After you select a pickup stop, we use Linz AG’s EFA Departure
+          Monitor to show the next public transport connections. This helps
+          coordinate transfers between the E‑Fleet and trams / buses.
+        </p>
+        <div
+          id="departures"
+          class="card-list"
+          aria-live="polite"
+          aria-busy="false"
+        ></div>
+      </section>
+
+      <section aria-labelledby="bookings-heading" class="section">
+        <div class="section-header">
+          <h2 id="bookings-heading">Upcoming bookings (demo / operator view)</h2>
+          <button type="button" id="refreshBookings" class="secondary-button">
+            Refresh bookings
+          </button>
+        </div>
+        <p class="section-description">
+          This simple operator view shows all upcoming bookings in the next 24
+          hours. In a full system, dispatchers would use this to assign
+          vehicles and drivers.
+        </p>
+        <div id="bookings" class="card-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Prototype for DevFest Linz – Great AI Hackathon · Built with Linz AG
+        EFA open data · Accessibility‑first design.
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

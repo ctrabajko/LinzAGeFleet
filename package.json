@@ -1,0 +1,28 @@
+{
+  "name": "linz-accessible-e-fleet",
+  "version": "1.0.0",
+  "description": "Accessible e-fleet booking system using Linz AG EFA API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "linz",
+    "linz-ag",
+    "efa",
+    "accessibility",
+    "mobility",
+    "booking"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
