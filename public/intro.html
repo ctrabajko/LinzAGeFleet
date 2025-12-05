@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Linz Accessible E‑Fleet – Hackathon Intro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Hackathon introduction for the Linz Accessible E‑Fleet prototype, connecting wheelchair-friendly e‑vehicles with Linz AG public transport."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <div>
+          <h1>Linz Accessible E‑Fleet</h1>
+          <p class="tagline">
+            DevFest Linz – Great AI Hackathon · Inclusive mobility prototype
+          </p>
+        </div>
+        <div class="accessibility-toolbar" aria-label="Accessibility tools">
+          <button type="button" id="toggle-contrast">High contrast</button>
+          <button type="button" id="increase-font" aria-label="Increase font size">
+            A+
+          </button>
+          <button type="button" id="decrease-font" aria-label="Decrease font size">
+            A−
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="section hero">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h2>Accessible e‑fleet for Linz – from idea to running prototype</h2>
+            <p class="hero-lead">
+              We built a wheelchair‑first e‑mobility service that connects to
+              Linz AG public transport. Book an accessible e‑vehicle, see
+              real‑time departures and simulate simple dispatching – all in one
+              lightweight demo.
+            </p>
+            <div class="hero-actions">
+              <a class="primary-link" href="index.html">
+                Open live prototype
+              </a>
+              <a class="secondary-link" href="#how-it-works">
+                Jump to “How it works”
+              </a>
+            </div>
+            <p class="hero-meta">
+              Tech: Node.js · Express · Vanilla JS · Linz AG EFA API ·
+              Accessibility‑first UI · n8n/WhatsApp/Voice (concept)
+            </p>
+          </div>
+          <div class="hero-highlights" aria-label="Key highlights">
+            <article class="card hero-card">
+              <h3>Hackathon challenge</h3>
+              <p>
+                Design an AI‑powered mobility solution that genuinely improves
+                accessibility for people with disabilities in Linz.
+              </p>
+            </article>
+            <article class="card hero-card">
+              <h3>Our focus</h3>
+              <p>
+                Wheelchair users who struggle with standard taxis, ride‑sharing
+                and apps that ignore ramps, secure spaces and assistance needs.
+              </p>
+            </article>
+            <article class="card hero-card">
+              <h3>What we deliver</h3>
+              <p>
+                A working booking flow, real‑time departure integration, basic
+                e‑fleet dispatch logic and a plan for voice/WhatsApp access.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="problem-heading">
+        <h2 id="problem-heading">Problem: door‑to‑door accessibility is broken</h2>
+        <div class="two-column">
+          <div>
+            <h3>Mobility gaps for wheelchair users</h3>
+            <ul>
+              <li>
+                Standard taxis and ride‑sharing often lack ramps or safe
+                wheelchair spaces.
+              </li>
+              <li>
+                Public transport apps rarely capture number of wheelchair users
+                or assistance level.
+              </li>
+              <li>
+                Planning door‑to‑door trips with transfers is time‑consuming and
+                error‑prone.
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3>Information and interface barriers</h3>
+            <ul>
+              <li>
+                Many UIs are not accessible – low contrast, small fonts, poor
+                screen‑reader support.
+              </li>
+              <li>
+                People who cannot comfortably use a keyboard or screen are often
+                excluded.
+              </li>
+              <li>
+                Voice‑based access (phone, WhatsApp) is rarely integrated with
+                live mobility data.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="solution-heading">
+        <h2 id="solution-heading">Solution: Linz Accessible E‑Fleet</h2>
+        <p class="section-description">
+          A prototype booking portal for a wheelchair‑accessible e‑fleet that
+          integrates tightly with Linz AG’s Elektronische Fahrplanauskunft
+          (EFA) API.
+        </p>
+        <div class="card-list">
+          <article class="card">
+            <h3>Accessible booking</h3>
+            <p>
+              People can book rides for today or tomorrow, explicitly stating
+              wheelchair count, assistance level and notes (service dog,
+              medical equipment, transfers, …).
+            </p>
+          </article>
+          <article class="card">
+            <h3>Public transport integration</h3>
+            <p>
+              Pickup and destination use the Linz AG <strong>Stop‑Finder</strong>.
+              After booking, the app calls the <strong>Departure Monitor</strong> to
+              show live departures at the pickup stop – ideal for coordinating
+              transfers.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Accessibility‑first UI</h3>
+            <p>
+              High‑contrast mode, font‑size controls, semantic HTML, ARIA roles,
+              keyboard navigation and a DE/EN toggle in the main app view.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Fake dispatch logic</h3>
+            <p>
+              Bookings are automatically assigned to one of three demo
+              e‑vehicles using simple load balancing that respects wheelchair
+              capacity.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="how-it-works" aria-labelledby="how-heading">
+        <h2 id="how-heading">How it works (prototype flow)</h2>
+        <ol class="steps-list">
+          <li>
+            <strong>User books online.</strong>
+            A web form captures personal data, origin/destination (via Linz AG
+            Stop‑Finder), date/time and accessibility needs.
+          </li>
+          <li>
+            <strong>Backend validates and assigns.</strong>
+            Node/Express enforces “today or tomorrow only” and assigns a demo
+            e‑vehicle based on upcoming load and wheelchair capacity.
+          </li>
+          <li>
+            <strong>Live departures for transfers.</strong>
+            The app calls Linz AG’s XML_DM_REQUEST to display the next departures
+            from the pickup stop with mobility‑impaired options activated.
+          </li>
+          <li>
+            <strong>Operator view.</strong>
+            A simple dashboard shows all upcoming bookings in the next 24 hours,
+            including route, wheelchairs, assistance level and assigned
+            vehicle.
+          </li>
+        </ol>
+      </section>
+
+      <section class="section" aria-labelledby="architecture-heading">
+        <h2 id="architecture-heading">Architecture & tech stack</h2>
+        <div class="two-column">
+          <div>
+            <h3>Stack</h3>
+            <ul>
+              <li>Node.js + Express backend</li>
+              <li>Static HTML/CSS/Vanilla JS frontend</li>
+              <li>Linz AG EFA XML Schnittstelle (JSON output)</li>
+              <li>In‑memory storage for hackathon simplicity</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Key APIs</h3>
+            <ul>
+              <li>
+                <code>/api/stops</code> → proxies to
+                <code>XML_STOPFINDER_REQUEST</code>
+              </li>
+              <li>
+                <code>/api/departures</code> → proxies to
+                <code>XML_DM_REQUEST</code> with mobility options
+              </li>
+              <li>
+                <code>/api/bookings</code> → booking creation & fake dispatch
+              </li>
+              <li>
+                <code>/api/bookings</code> (GET) → upcoming trips for operator
+                view
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="voice-heading">
+        <h2 id="voice-heading">Next: WhatsApp & voice for full accessibility</h2>
+        <p class="section-description">
+          Not everyone can or wants to use a browser. The same APIs can power a
+          voice‑first booking experience via WhatsApp, n8n, OpenAI and ElevenLabs.
+        </p>
+        <div class="card-list">
+          <article class="card">
+            <h3>WhatsApp voice entry</h3>
+            <p>
+              A user sends a voice note to a WhatsApp number (Twilio). n8n
+              receives the audio and uses OpenAI Whisper to transcribe it.
+            </p>
+          </article>
+          <article class="card">
+            <h3>AI‑assisted booking</h3>
+            <p>
+              OpenAI Chat extracts origin, destination, date/time and
+              accessibility needs, then calls our
+              <code>/api/bookings</code> endpoint to create a real booking.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Spoken confirmation</h3>
+            <p>
+              ElevenLabs generates a short confirmation audio message which is
+              sent back to the user on WhatsApp together with a text summary.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="demo-heading">
+        <h2 id="demo-heading">How to run the demo locally</h2>
+        <ol class="steps-list">
+          <li>
+            <strong>Install dependencies</strong><br />
+            <code>npm install</code>
+          </li>
+          <li>
+            <strong>Start the server</strong><br />
+            <code>npm run dev</code> or <code>npm start</code>
+          </li>
+          <li>
+            <strong>Open the app</strong><br />
+            Go to <code>http://localhost:3000/index.html</code> to use the
+            booking prototype.
+          </li>
+        </ol>
+        <p class="hint">
+          The intro page you are viewing can be opened as
+          <code>http://localhost:3000/intro.html</code>. From there, click
+          “Open live prototype”.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Prototype for DevFest Linz – Great AI Hackathon · Built with Linz AG
+        EFA open data · Accessibility‑first design.
+      </p>
+    </footer>
+
+    <script src="intro.js"></script>
+  </body>
+</html>
