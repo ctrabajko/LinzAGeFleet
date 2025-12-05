@@ -358,6 +358,30 @@ body.high-contrast .section {
   color: var(--primary-dark);
 }
 
+/* Embedded map preview */
+
+.map-preview {
+  margin-top: 0.75rem;
+}
+
+.map-preview p {
+  margin: 0 0 0.35rem;
+}
+
+.map-preview-frame-wrapper {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #e5e7eb;
+}
+
+.map-preview iframe {
+  display: block;
+  width: 100%;
+  height: 200px;
+  border: 0;
+}
+
 .booking-aside {
   padding: 1rem 1.1rem;
   border-radius: 0.9rem;
@@ -378,6 +402,30 @@ body.high-contrast .booking-aside {
 
 .booking-steps li {
   margin-bottom: 0.6rem;
+}
+
+/* Step 3 summary */
+
+.booking-summary {
+  margin-bottom: 0.9rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 1px dashed rgba(148, 163, 184, 0.8);
+  background: rgba(239, 246, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+body.high-contrast .booking-summary {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.booking-summary h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+}
+
+.booking-summary p {
+  margin: 0;
 }
 
 fieldset {
