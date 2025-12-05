@@ -439,17 +439,11 @@
   }
 
   function validateStep(step) {
+    // Keep the wizard flowing; enforce required fields mainly on final submit.
     setFormMessage("");
-    if (step === 1) {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      if (!name || !email) {
-        setFormMessage(t("error.step1Required"), "error");
-        return false;
-      }
-    } else if (step === 2) {
-      resolveSelectedStopId(fromInput, "from");
-      resolveSelectedStopId(toInput, "to");
+
+    if (step === 2) {
+      // Ensure users at least pick a date and time before continuing.
       const dateVal = document.getElementById("date").value;
       const timeVal = document.getElementById("time").value;
       if (!dateVal || !timeVal) {
@@ -457,6 +451,8 @@
         return false;
       }
     }
+
+    // Step 1 and 3 do not block navigation; the final submit validates all fields.
     return true;
   }
 
