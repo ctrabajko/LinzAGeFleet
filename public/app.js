@@ -878,7 +878,7 @@
 
     if (nextStepBtn) {
       nextStepBtn.addEventListener("click", () => {
-        if (!validateStep(currentStep)) return;
+        // Keep the wizard responsive: always move forward one step.
         if (currentStep < totalSteps) {
           currentStep += 1;
           showStep(currentStep);
