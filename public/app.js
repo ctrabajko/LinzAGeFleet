@@ -85,6 +85,7 @@
       "booking.stepPrev": "Back",
       "booking.stepNext": "Next step",
       "booking.map.view": "View on Google Maps",
+      "booking.map.hint": "Map preview updates when you select a stop.",
       "booking.aside.title": "How this prototype works",
       "booking.aside.step1":
         "You choose pickup and destination from Linz AG stops, plus date, time and accessibility needs.",
@@ -134,8 +135,8 @@
       "error.step1Required":
         "Please fill in your name and email to continue.",
       "error.step2Required":
-        "Please select pickup, destination, date and time to continue.",
-      "error.bookingFailed": "Booking failed.",
+        "Please select date and time to continue.",
+      "error.bookingFailed "error.bookingFailed": "Booking failed.",
       "error.generic":
         "Something went wrong. Please try again.",
       "success.bookingConfirmed":
@@ -200,9 +201,11 @@
       "booking.submit": "Barrierefreie Fahrt buchen",
       "booking.ctaPrimary": "Barrierefreie Fahrt buchen",
       "booking.ctaSecondary": "Echtzeit-Abfahrten anzeigen",
-      "booking.stepPrev": "Zur\u00fcck",
+      "booking.stepPrev": "Zur\\u00fcck",
       "booking.stepNext": "Weiter",
-      "booking.map.view": "In Google Maps \u00f6ffnen",
+      "booking.map.view": "In Google Maps \\u00f6ffnen",
+      "booking.map.hint":
+        "Die Kartenansicht aktualisiert sich, sobald du eine Haltestelle ausgew\\u00e4hlt hast.",
       "booking.aside.title": "So funktioniert dieser Prototyp",
       "booking.aside.step1":
         "Du w\u00e4hlst Abhol- und Ziel-Haltestelle aus dem Haltestellenverzeichnis der Linz AG sowie Datum, Uhrzeit und Barrierefreiheits-Bed\u00fcrfnisse.",
@@ -255,7 +258,7 @@
       "error.step1Required":
         "Bitte gib Name und E\u2011Mail an, um fortzufahren.",
       "error.step2Required":
-        "Bitte w\u00e4hle Abhol- und Ziel-Haltestelle sowie Datum und Uhrzeit, um fortzufahren.",
+        "Bitte w\u00e4hle Datum und Uhrzeit, um fortzufahren.",
       "success.bookingConfirmed":
         "Buchung best\\u00e4tigt: {id}. Eine Best\\u00e4tigung wird an {email} gesendet.",
       "hero.card1.title": "Konzipiert f\\u00fcr Rollstuhlnutzer:innen",
@@ -449,7 +452,7 @@
       resolveSelectedStopId(toInput, "to");
       const dateVal = document.getElementById("date").value;
       const timeVal = document.getElementById("time").value;
-      if (!fromHiddenId.value || !toHiddenId.value || !dateVal || !timeVal) {
+      if (!dateVal || !timeVal) {
         setFormMessage(t("error.step2Required"), "error");
         return false;
       }
