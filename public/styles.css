@@ -271,6 +271,37 @@ body.high-contrast .section {
   gap: 1.25rem;
 }
 
+/* Booking layout */
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.booking-aside {
+  padding: 1rem 1.1rem;
+  border-radius: 0.9rem;
+  background: radial-gradient(circle at top left, #eef2ff, #ffffff);
+  border: 1px solid rgba(129, 140, 248, 0.5);
+  font-size: 0.9rem;
+}
+
+body.high-contrast .booking-aside {
+  background: radial-gradient(circle at top left, #020617, #0b1120);
+  border-color: rgba(191, 219, 254, 0.6);
+}
+
+.booking-aside h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.booking-steps li {
+  margin-bottom: 0.6rem;
+}
+
 fieldset {
   border: none;
   padding: 0;
@@ -473,6 +504,17 @@ body.high-contrast .card {
 }
 
 /* Responsive tweaks */
+
+@media (max-width: 900px) {
+  .hero-grid,
+  .booking-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .booking-aside {
+    margin-top: 1rem;
+  }
+}
 
 @media (max-width: 768px) {
   .field-inline {

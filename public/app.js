@@ -69,6 +69,15 @@
       "booking.placeholder.notes":
         "E.g. service dog, oxygen equipment, transfer requirements\u2026",
       "booking.submit": "Book accessible ride",
+      "booking.ctaPrimary": "Book your accessible ride",
+      "booking.ctaSecondary": "See live departures",
+      "booking.aside.title": "How this prototype works",
+      "booking.aside.step1":
+        "You choose pickup and destination from Linz AG stops, plus date, time and accessibility needs.",
+      "booking.aside.step2":
+        "The backend validates that the trip is within the next 24 hours and assigns one of three demo e-vans based on load and wheelchair capacity.",
+      "booking.aside.step3":
+        "The app calls Linz AG\u2019s departure monitor to show real-time departures at your pickup stop and updates the operator view with your booking.",
       "departures.heading":
         "Live departures from your pickup stop (Linz AG)",
       "departures.refresh": "Refresh departures",
@@ -109,7 +118,16 @@
       "error.generic":
         "Something went wrong. Please try again.",
       "success.bookingConfirmed":
-        "Booking confirmed: {id}. We will send a confirmation to {email}."
+        "Booking confirmed: {id}. We will send a confirmation to {email}.",
+      "hero.card1.title": "Designed for wheelchair users",
+      "hero.card1.body":
+        "Vehicles with ramps and secure spaces, explicit wheelchair count and assistance level in every booking.",
+      "hero.card2.title": "Connected to Linz AG",
+      "hero.card2.body":
+        "Stop-Finder suggestions and live departure monitor to coordinate transfers with trams and buses.",
+      "hero.card3.title": "Hackathon-ready",
+      "hero.card3.body":
+        "In-memory backend, simple dispatch logic for 3 e-vans and a clear API for future voice/WhatsApp access."
     },
     de: {
       "skip.link": "Zum Hauptinhalt springen",
@@ -159,6 +177,15 @@
       "booking.placeholder.notes":
         "z.\u202fB. Assistenzhund, Sauerstoffger\u00e4t, Umsteige-Unterst\u00fctzung \u2026",
       "booking.submit": "Barrierefreie Fahrt buchen",
+      "booking.ctaPrimary": "Barrierefreie Fahrt buchen",
+      "booking.ctaSecondary": "Echtzeit-Abfahrten anzeigen",
+      "booking.aside.title": "So funktioniert dieser Prototyp",
+      "booking.aside.step1":
+        "Du w\u00e4hlst Abhol- und Ziel-Haltestelle aus dem Haltestellenverzeichnis der Linz AG sowie Datum, Uhrzeit und Barrierefreiheits-Bed\u00fcrfnisse.",
+      "booking.aside.step2":
+        "Das Backend pr\u00fcft, ob die Fahrt innerhalb der n\u00e4chsten 24 Stunden liegt, und weist anhand der Auslastung und Rollstuhlkapazit\u00e4t eines von drei Demo-E-Fahrzeugen zu.",
+      "booking.aside.step3":
+        "Die App ruft die Abfahrtsanzeige der Linz AG auf, um Echtzeit-Abfahrten an deiner Abhol-Haltestelle anzuzeigen, und aktualisiert die Dispo-Ansicht mit deiner Buchung.",
       "departures.heading":
         "Echtzeit\u2011Abfahrten von deiner Abhol\u2011Haltestelle (Linz AG)",
       "departures.refresh": "Abfahrten aktualisieren",
@@ -190,16 +217,25 @@
       "bookings.loadError":
         "Buchungen konnten nicht geladen werden. Bitte aktualisieren.",
       "footer.text":
-        "Prototyp f\u00fcr das DevFest Linz \u2013 Great AI Hackathon \u00b7 Entwickelt mit Linz AG EFA Open Data \u00b7 Accessibility\u2011First\u2011Design.",
+        "Prototyp f\\u00fcr das DevFest Linz \\u2013 Great AI Hackathon \\u00b7 Entwickelt mit Linz AG EFA Open Data \\u00b7 Accessibility\\u2011First\\u2011Design.",
       "error.pickupDestinationRequired":
-        "Bitte w\u00e4hle eine g\u00fcltige Abhol- und Ziel\u2011Haltestelle aus den Vorschl\u00e4gen.",
+        "Bitte w\\u00e4hle eine g\\u00fcltige Abhol- und Ziel\\u2011Haltestelle aus den Vorschl\\u00e4gen.",
       "error.requiredFields":
-        "Bitte f\u00fclle alle Pflichtfelder aus (Name, E\u2011Mail, Datum, Uhrzeit).",
+        "Bitte f\\u00fclle alle Pflichtfelder aus (Name, E\\u2011Mail, Datum, Uhrzeit).",
       "error.bookingFailed": "Buchung fehlgeschlagen.",
       "error.generic":
         "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
       "success.bookingConfirmed":
-        "Buchung best\u00e4tigt: {id}. Eine Best\u00e4tigung wird an {email} gesendet."
+        "Buchung best\\u00e4tigt: {id}. Eine Best\\u00e4tigung wird an {email} gesendet.",
+      "hero.card1.title": "Konzipiert f\\u00fcr Rollstuhlnutzer:innen",
+      "hero.card1.body":
+        "Fahrzeuge mit Rampe und Sicherungspl\\u00e4tzen, explizite Angabe von Rollstuhlanzahl und Unterst\\u00fctzungsbedarf bei jeder Buchung.",
+      "hero.card2.title": "An Linz AG angebunden",
+      "hero.card2.body":
+        "Haltestellenvorschl\\u00e4ge \\u00fcber den Stop-Finder und Echtzeit-Abfahrten zur besseren Planung von Umstiegen mit Stra\\u00dfenbahn und Bus.",
+      "hero.card3.title": "Hackathon-ready",
+      "hero.card3.body":
+        "In-Memory-Backend, einfache Disposition f\\u00fcr drei E-Vans und eine klare API f\\u00fcr k\\u00fcnftige Voice- oder WhatsApp-Anbindung."
     }
   };
 
