@@ -143,6 +143,12 @@ body.high-contrast .section.hero {
   align-items: flex-start;
 }
 
+/* Ensure step indicator adapts to high contrast */
+
+body.high-contrast .step-indicator-number {
+  background: #020617;
+}
+
 .hero-copy h2 {
   margin-top: 0;
   margin-bottom: 0.75rem;
@@ -280,6 +286,78 @@ body.high-contrast .section {
   align-items: flex-start;
 }
 
+/* Step indicator */
+
+.step-indicator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.step-indicator-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.step-indicator-number {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  border: 2px solid rgba(148, 163, 184, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.step-indicator-label {
+  font-weight: 500;
+}
+
+.step-indicator-item.is-active .step-indicator-number {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #f9fafb;
+}
+
+.step-indicator-item.is-complete .step-indicator-number {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #f9fafb;
+}
+
+.step-indicator-item.is-active .step-indicator-label {
+  color: var(--fg);
+}
+
+.step-indicator-item.is-complete .step-indicator-label {
+  color: var(--fg);
+}
+
+/* Map links for stops */
+
+.map-link-row {
+  margin-top: 0.25rem;
+}
+
+.map-link {
+  font-size: 0.8rem;
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.map-link:hover,
+.map-link:focus-visible {
+  color: var(--primary-dark);
+}
+
 .booking-aside {
   padding: 1rem 1.1rem;
   border-radius: 0.9rem;
@@ -367,12 +445,19 @@ textarea:focus-visible {
   gap: 0.75rem;
 }
 
+.step-nav-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 button {
   font-family: inherit;
 }
 
 button[type="submit"],
-.secondary-button {
+.secondary-button,
+.primary-button {
   border-radius: 999px;
   padding: 0.6rem 1.4rem;
   border: none;
@@ -386,7 +471,8 @@ button[type="submit"],
   font-size: 0.95rem;
 }
 
-button[type="submit"] {
+button[type="submit"],
+.primary-button {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #f9fafb;
   box-shadow: 0 12px 22px rgba(37, 99, 235, 0.45);

@@ -9,6 +9,7 @@
 
   const bookingForm = document.getElementById("booking-form");
   const formMessage = document.getElementById("formMessage");
+  const submitBookingBtn = document.getElementById("submitBooking");
 
   const departuresContainer = document.getElementById("departures");
   const refreshDeparturesBtn = document.getElementById("refreshDepartures");
@@ -20,6 +21,15 @@
   const increaseFontBtn = document.getElementById("increase-font");
   const decreaseFontBtn = document.getElementById("decrease-font");
   const langToggleButtons = document.querySelectorAll(".lang-toggle");
+  const fromStopMapLink = document.getElementById("fromStopMapLink");
+  const toStopMapLink = document.getElementById("toStopMapLink");
+
+  let currentStep = 1;
+  const totalSteps = 3;
+  let stepElements;
+  let stepIndicatorItems;
+  let prevStepBtn;
+  let nextStepBtn;
 
   const translations = {
     en: {
@@ -71,6 +81,9 @@
       "booking.submit": "Book accessible ride",
       "booking.ctaPrimary": "Book your accessible ride",
       "booking.ctaSecondary": "See live departures",
+      "booking.stepPrev": "Back",
+      "booking.stepNext": "Next step",
+      "booking.map.view": "View on Google Maps",
       "booking.aside.title": "How this prototype works",
       "booking.aside.step1":
         "You choose pickup and destination from Linz AG stops, plus date, time and accessibility needs.",
@@ -114,6 +127,10 @@
         "Please select a valid pickup and destination stop from the suggestions.",
       "error.requiredFields":
         "Please fill in all required fields (name, email, date, time).",
+      "error.step1Required":
+        "Please fill in your name and email to continue.",
+      "error.step2Required":
+        "Please select pickup, destination, date and time to continue.",
       "error.bookingFailed": "Booking failed.",
       "error.generic":
         "Something went wrong. Please try again.",
@@ -179,6 +196,9 @@
       "booking.submit": "Barrierefreie Fahrt buchen",
       "booking.ctaPrimary": "Barrierefreie Fahrt buchen",
       "booking.ctaSecondary": "Echtzeit-Abfahrten anzeigen",
+      "booking.stepPrev": "Zur\u00fcck",
+      "booking.stepNext": "Weiter",
+      "booking.map.view": "In Google Maps \u00f6ffnen",
       "booking.aside.title": "So funktioniert dieser Prototyp",
       "booking.aside.step1":
         "Du w\u00e4hlst Abhol- und Ziel-Haltestelle aus dem Haltestellenverzeichnis der Linz AG sowie Datum, Uhrzeit und Barrierefreiheits-Bed\u00fcrfnisse.",
@@ -225,6 +245,10 @@
       "error.bookingFailed": "Buchung fehlgeschlagen.",
       "error.generic":
         "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+      "error.step1Required":
+        "Bitte gib Name und E\u2011Mail an, um fortzufahren.",
+      "error.step2Required":
+        "Bitte w\u00e4hle Abhol- und Ziel-Haltestelle sowie Datum und Uhrzeit, um fortzufahren.",
       "success.bookingConfirmed":
         "Buchung best\\u00e4tigt: {id}. Eine Best\\u00e4tigung wird an {email} gesendet.",
       "hero.card1.title": "Konzipiert f\\u00fcr Rollstuhlnutzer:innen",
@@ -323,6 +347,75 @@
     }
   }
 
+  function showStep(step) {
+    if (!stepElements || !stepElements.length) return;
+
+    const target = Math.min(Math.max(step, 1), totalSteps);
+    currentStep = target;
+
+    stepElements.forEach((el) => {
+      const stepNum = Number(el.getAttribute("data-step"));
+      el.hidden = stepNum !== currentStep;
+    });
+
+    if (prevStepBtn) {
+      prevStepBtn.hidden = currentStep === 1;
+    }
+    if (nextStepBtn) {
+      nextStepBtn.hidden = currentStep === totalSteps;
+    }
+    if (submitBookingBtn) {
+      submitBookingBtn.hidden = currentStep !== totalSteps;
+    }
+
+    if (stepIndicatorItems && stepIndicatorItems.length) {
+      stepIndicatorItems.forEach((item) => {
+        const stepNum = Number(item.getAttribute("data-step"));
+        item.classList.remove("is-active", "is-complete");
+        if (stepNum < currentStep) {
+          item.classList.add("is-complete");
+        } else if (stepNum === currentStep) {
+          item.classList.add("is-active");
+        }
+      });
+    }
+
+    let focusTarget = null;
+    if (currentStep === 1) {
+      focusTarget = document.getElementById("name");
+    } else if (currentStep === 2) {
+      focusTarget = fromInput;
+    } else if (currentStep === 3) {
+      focusTarget = document.getElementById("wheelchairCount");
+    }
+
+    if (focusTarget && typeof focusTarget.focus === "function") {
+      focusTarget.focus();
+    }
+  }
+
+  function validateStep(step) {
+    setFormMessage("");
+    if (step === 1) {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      if (!name || !email) {
+        setFormMessage(t("error.step1Required"), "error");
+        return false;
+      }
+    } else if (step === 2) {
+      resolveSelectedStopId(fromInput, "from");
+      resolveSelectedStopId(toInput, "to");
+      const dateVal = document.getElementById("date").value;
+      const timeVal = document.getElementById("time").value;
+      if (!fromHiddenId.value || !toHiddenId.value || !dateVal || !timeVal) {
+        setFormMessage(t("error.step2Required"), "error");
+        return false;
+      }
+    }
+    return true;
+  }
+
   async function fetchStops(query) {
     const response = await fetch(`/api/stops?q=${encodeURIComponent(query)}`);
     if (!response.ok) {
@@ -371,8 +464,19 @@
   function resolveSelectedStopId(inputEl, target) {
     const value = inputEl.value.trim();
     if (!value) {
-      if (target === "from") fromHiddenId.value = "";
-      else toHiddenId.value = "";
+      if (target === "from") {
+        fromHiddenId.value = "";
+        if (fromStopMapLink) {
+          fromStopMapLink.hidden = true;
+          fromStopMapLink.removeAttribute("href");
+        }
+      } else {
+        toHiddenId.value = "";
+        if (toStopMapLink) {
+          toStopMapLink.hidden = true;
+          toStopMapLink.removeAttribute("href");
+        }
+      }
       return;
     }
 
@@ -380,14 +484,36 @@
     const match = list.find((s) => s.name === value);
 
     if (match) {
+      const query = encodeURIComponent(match.name);
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+
       if (target === "from") {
         fromHiddenId.value = match.id;
+        if (fromStopMapLink) {
+          fromStopMapLink.href = mapUrl;
+          fromStopMapLink.hidden = false;
+        }
       } else {
         toHiddenId.value = match.id;
+        if (toStopMapLink) {
+          toStopMapLink.href = mapUrl;
+          toStopMapLink.hidden = false;
+        }
       }
     } else {
-      if (target === "from") fromHiddenId.value = "";
-      else toHiddenId.value = "";
+      if (target === "from") {
+        fromHiddenId.value = "";
+        if (fromStopMapLink) {
+          fromStopMapLink.hidden = true;
+          fromStopMapLink.removeAttribute("href");
+        }
+      } else {
+        toHiddenId.value = "";
+        if (toStopMapLink) {
+          toStopMapLink.hidden = true;
+          toStopMapLink.removeAttribute("href");
+        }
+      }
     }
   }
 
@@ -665,8 +791,35 @@
       });
     });
 
+    stepElements = Array.from(document.querySelectorAll(".form-step"));
+    stepIndicatorItems = Array.from(
+      document.querySelectorAll(".step-indicator-item")
+    );
+    prevStepBtn = document.getElementById("prevStep");
+    nextStepBtn = document.getElementById("nextStep");
+
+    if (prevStepBtn) {
+      prevStepBtn.addEventListener("click", () => {
+        if (currentStep > 1) {
+          currentStep -= 1;
+          showStep(currentStep);
+        }
+      });
+    }
+
+    if (nextStepBtn) {
+      nextStepBtn.addEventListener("click", () => {
+        if (!validateStep(currentStep)) return;
+        if (currentStep < totalSteps) {
+          currentStep += 1;
+          showStep(currentStep);
+        }
+      });
+    }
+
     applyTranslations();
     updateLanguageToggleUI();
+    showStep(currentStep);
     let fromTimeout;
     fromInput.addEventListener("input", () => {
       clearTimeout(fromTimeout);
