@@ -10,6 +10,7 @@
   const bookingForm = document.getElementById("booking-form");
   const formMessage = document.getElementById("formMessage");
   const submitBookingBtn = document.getElementById("submitBooking");
+  const summaryTextEl = document.getElementById("bookingSummaryText");
 
   const departuresContainer = document.getElementById("departures");
   const refreshDeparturesBtn = document.getElementById("refreshDepartures");
@@ -91,6 +92,9 @@
         "The backend validates that the trip is within the next 24 hours and assigns one of three demo e-vans based on load and wheelchair capacity.",
       "booking.aside.step3":
         "The app calls Linz AG\u2019s departure monitor to show real-time departures at your pickup stop and updates the operator view with your booking.",
+      "booking.summary.title": "Your trip summary",
+      "booking.summary.text":
+        "On {date} at {time}, from {from} to {to}. Wheelchairs: {wheelchairs}. Assistance: {assistance}.",
       "departures.heading":
         "Live departures from your pickup stop (Linz AG)",
       "departures.refresh": "Refresh departures",
@@ -206,6 +210,9 @@
         "Das Backend pr\u00fcft, ob die Fahrt innerhalb der n\u00e4chsten 24 Stunden liegt, und weist anhand der Auslastung und Rollstuhlkapazit\u00e4t eines von drei Demo-E-Fahrzeugen zu.",
       "booking.aside.step3":
         "Die App ruft die Abfahrtsanzeige der Linz AG auf, um Echtzeit-Abfahrten an deiner Abhol-Haltestelle anzuzeigen, und aktualisiert die Dispo-Ansicht mit deiner Buchung.",
+      "booking.summary.title": "Deine Fahrt\u00fcbersicht",
+      "booking.summary.text":
+        "Am {date} um {time}, von {from} nach {to}. Rollst\u00fchle: {wheelchairs}. Unterst\u00fctzung: {assistance}.",
       "departures.heading":
         "Echtzeit\u2011Abfahrten von deiner Abhol\u2011Haltestelle (Linz AG)",
       "departures.refresh": "Abfahrten aktualisieren",
@@ -314,6 +321,10 @@
     if (notes) {
       notes.placeholder = t("booking.placeholder.notes");
     }
+
+    if (currentStep === 3) {
+      updateStep3Summary();
+    }
   }
 
   function updateLanguageToggleUI() {
@@ -387,11 +398,41 @@
       focusTarget = fromInput;
     } else if (currentStep === 3) {
       focusTarget = document.getElementById("wheelchairCount");
+      updateStep3Summary();
     }
 
     if (focusTarget && typeof focusTarget.focus === "function") {
       focusTarget.focus();
     }
+  }
+
+  function updateStep3Summary() {
+    if (!summaryTextEl) return;
+
+    const fromName = (fromInput && fromInput.value.trim()) || "–";
+    const toName = (toInput && toInput.value.trim()) || "–";
+    const dateVal = (document.getElementById("date") || {}).value || "";
+    const timeVal = (document.getElementById("time") || {}).value || "";
+    const wheelchairsVal =
+      (document.getElementById("wheelchairCount") || {}).value || "0";
+    const assistanceSelect = document.getElementById("assistanceLevel");
+    let assistanceLabel = "–";
+    if (assistanceSelect) {
+      const selectedOption =
+        assistanceSelect.options[assistanceSelect.selectedIndex];
+      if (selectedOption && selectedOption.textContent) {
+        assistanceLabel = selectedOption.textContent.trim();
+      }
+    }
+
+    summaryTextEl.textContent = t("booking.summary.text", {
+      date: dateVal || "–",
+      time: timeVal || "–",
+      from: fromName || "–",
+      to: toName || "–",
+      wheelchairs: wheelchairsVal || "0",
+      assistance: assistanceLabel || "–",
+    });
   }
 
   function validateStep(step) {
@@ -461,6 +502,22 @@
       });
   }
 
+  function updateMapPreview(stopNameOrNull) {
+    const frame = document.getElementById("mapPreviewFrame");
+    if (!frame) return;
+
+    if (stopNameOrNull) {
+      const embedUrl = `https://www.google.com/maps?q=${encodeURIComponent(
+        stopNameOrNull
+      )}&output=embed`;
+      frame.src = embedUrl;
+      frame.hidden = false;
+    } else if (!fromHiddenId.value && !toHiddenId.value) {
+      frame.hidden = true;
+      frame.removeAttribute("src");
+    }
+  }
+
   function resolveSelectedStopId(inputEl, target) {
     const value = inputEl.value.trim();
     if (!value) {
@@ -477,11 +534,21 @@
           toStopMapLink.removeAttribute("href");
         }
       }
+      updateMapPreview(null);
       return;
     }
 
     const list = target === "from" ? lastFromStops : lastToStops;
-    const match = list.find((s) => s.name === value);
+    const lowerValue = value.toLowerCase();
+
+    let match =
+      list.find((s) => s.name === value) ||
+      list.find((s) => s.name.toLowerCase() === lowerValue) ||
+      list.find((s) => s.name.toLowerCase().includes(lowerValue));
+
+    if (!match && list.length === 1) {
+      match = list[0];
+    }
 
     if (match) {
       const query = encodeURIComponent(match.name);
@@ -500,6 +567,8 @@
           toStopMapLink.hidden = false;
         }
       }
+
+      updateMapPreview(match.name);
     } else {
       if (target === "from") {
         fromHiddenId.value = "";
@@ -514,6 +583,7 @@
           toStopMapLink.removeAttribute("href");
         }
       }
+      updateMapPreview(null);
     }
   }
 
@@ -814,6 +884,19 @@
           currentStep += 1;
           showStep(currentStep);
         }
+      });
+    }
+
+    const wheelchairCountInput = document.getElementById("wheelchairCount");
+    const assistanceLevelSelect = document.getElementById("assistanceLevel");
+    if (wheelchairCountInput) {
+      wheelchairCountInput.addEventListener("input", () => {
+        if (currentStep === 3) updateStep3Summary();
+      });
+    }
+    if (assistanceLevelSelect) {
+      assistanceLevelSelect.addEventListener("change", () => {
+        if (currentStep === 3) updateStep3Summary();
       });
     }
 

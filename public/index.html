@@ -326,10 +326,31 @@
                         <input id="time" name="time" type="time" required />
                       </div>
                     </div>
+
+                    <div class="map-preview">
+                      <p data-i18n="booking.map.hint">
+                        Map preview updates when you select a stop.
+                      </p>
+                      <div class="map-preview-frame-wrapper">
+                        <iframe
+                          id="mapPreviewFrame"
+                          title="Map preview"
+                          loading="lazy"
+                          hidden
+                          referrerpolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                      </div>
+                    </div>
                   </fieldset>
                 </div>
 
                 <div class="form-step" data-step="3" hidden>
+                  <div class="booking-summary">
+                    <h4 data-i18n="booking.summary.title">Your trip summary</h4>
+                    <p id="bookingSummaryText">
+                      <!-- Filled dynamically in the current language -->
+                    </p>
+                  </div>
                   <fieldset>
                     <legend data-i18n="booking.legend.accessibility">
                       Accessibility needs
@@ -349,6 +370,50 @@
                         value="1"
                       />
                     </div>
+
+                    <div class="field">
+                      <label
+                        for="assistanceLevel"
+                        data-i18n="booking.label.assistanceLevel"
+                        >Assistance level</label
+                      >
+                      <select id="assistanceLevel" name="assistanceLevel">
+                        <option
+                          value="standard"
+                          data-i18n="booking.option.assistance.standard"
+                        >
+                          Standard – ramp and secure space
+                        </option>
+                        <option
+                          value="extra_time"
+                          data-i18n="booking.option.assistance.extraTime"
+                        >
+                          Extra time for boarding / alighting
+                        </option>
+                        <option
+                          value="with_assistant"
+                          data-i18n="booking.option.assistance.withAssistant"
+                        >
+                          Needs driver to assist with wheelchair
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="field">
+                      <label
+                        for="notes"
+                        data-i18n="booking.label.notes"
+                        >Additional notes for the driver</label
+                      >
+                      <textarea
+                        id="notes"
+                        name="notes"
+                        rows="3"
+                        placeholder="E.g. service dog, oxygen equipment, transfer requirements…"
+                      ></textarea>
+                    </div>
+                  </fieldset>
+                </div>
 
                     <div class="field">
                       <label
