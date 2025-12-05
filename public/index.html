@@ -160,188 +160,270 @@
               All vehicles have ramps and secure spaces for wheelchair users.
             </p>
 
+            <div class="step-indicator" aria-label="Booking steps">
+              <div class="step-indicator-item is-active" data-step="1">
+                <span class="step-indicator-number">1</span>
+                <span
+                  class="step-indicator-label"
+                  data-i18n="booking.legend.details"
+                  >Your details</span
+                >
+              </div>
+              <div class="step-indicator-item" data-step="2">
+                <span class="step-indicator-number">2</span>
+                <span
+                  class="step-indicator-label"
+                  data-i18n="booking.legend.trip"
+                  >Trip details</span
+                >
+              </div>
+              <div class="step-indicator-item" data-step="3">
+                <span class="step-indicator-number">3</span>
+                <span
+                  class="step-indicator-label"
+                  data-i18n="booking.legend.accessibility"
+                  >Accessibility needs</span
+                >
+              </div>
+            </div>
+
             <form id="booking-form" novalidate>
-              <fieldset>
-                <legend data-i18n="booking.legend.details">Your details</legend>
-                <div class="field">
-                  <label for="name">
-                    <span data-i18n="booking.label.name">Name</span
-                    ><span aria-hidden="true">*</span>
-                  </label>
-                  <input id="name" name="name" autocomplete="name" required />
-                </div>
-                <div class="field">
-                  <label for="email">
-                    <span data-i18n="booking.label.email">Email</span
-                    ><span aria-hidden="true">*</span>
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autocomplete="email"
-                    required
-                  />
-                </div>
-                <div class="field">
-                  <label for="phone" data-i18n="booking.label.phone">Phone</label>
-                  <input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    autocomplete="tel"
-                    placeholder="+43 …"
-                  />
-                </div>
-              </fieldset>
-
-              <fieldset>
-                <legend data-i18n="booking.legend.trip">Trip details</legend>
-                <p class="hint" data-i18n="booking.hint.trip">
-                  Choose origin and destination from Linz AG stops or important
-                  places. Suggestions come directly from the Linz AG EFA API.
-                </p>
-
-                <div class="field">
-                  <label for="fromStopName">
-                    <span data-i18n="booking.label.pickup"
-                      >Pickup stop / place</span
-                    ><span aria-hidden="true">*</span>
-                  </label>
-                  <input
-                    id="fromStopName"
-                    name="fromStopName"
-                    list="fromStopList"
-                    autocomplete="off"
-                    aria-describedby="fromStopHint"
-                    required
-                  />
-                  <datalist id="fromStopList"></datalist>
-                  <p
-                    class="hint"
-                    id="fromStopHint"
-                    data-i18n="booking.hint.pickup"
-                  >
-                    Start typing “Hauptbahnhof”, “JKU”, “solarCity”… and select a
-                    suggestion.
-                  </p>
-                  <input type="hidden" id="fromStopId" name="fromStopId" />
+              <div class="form-steps">
+                <div class="form-step" data-step="1">
+                  <fieldset>
+                    <legend data-i18n="booking.legend.details">Your details</legend>
+                    <div class="field">
+                      <label for="name">
+                        <span data-i18n="booking.label.name">Name</span
+                        ><span aria-hidden="true">*</span>
+                      </label>
+                      <input id="name" name="name" autocomplete="name" required />
+                    </div>
+                    <div class="field">
+                      <label for="email">
+                        <span data-i18n="booking.label.email">Email</span
+                        ><span aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                      />
+                    </div>
+                    <div class="field">
+                      <label for="phone" data-i18n="booking.label.phone">Phone</label>
+                      <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        autocomplete="tel"
+                        placeholder="+43 …"
+                      />
+                    </div>
+                  </fieldset>
                 </div>
 
-                <div class="field">
-                  <label for="toStopName">
-                    <span data-i18n="booking.label.destination"
-                      >Destination stop / place</span
-                    ><span aria-hidden="true">*</span>
-                  </label>
-                  <input
-                    id="toStopName"
-                    name="toStopName"
-                    list="toStopList"
-                    autocomplete="off"
-                    aria-describedby="toStopHint"
-                    required
-                  />
-                  <datalist id="toStopList"></datalist>
-                  <p
-                    class="hint"
-                    id="toStopHint"
-                    data-i18n="booking.hint.destination"
-                  >
-                    Start typing your destination and pick one of the suggestions.
-                  </p>
-                  <input type="hidden" id="toStopId" name="toStopId" />
+                <div class="form-step" data-step="2" hidden>
+                  <fieldset>
+                    <legend data-i18n="booking.legend.trip">Trip details</legend>
+                    <p class="hint" data-i18n="booking.hint.trip">
+                      Choose origin and destination from Linz AG stops or important
+                      places. Suggestions come directly from the Linz AG EFA API.
+                    </p>
+
+                    <div class="field">
+                      <label for="fromStopName">
+                        <span data-i18n="booking.label.pickup"
+                          >Pickup stop / place</span
+                        ><span aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="fromStopName"
+                        name="fromStopName"
+                        list="fromStopList"
+                        autocomplete="off"
+                        aria-describedby="fromStopHint"
+                        required
+                      />
+                      <datalist id="fromStopList"></datalist>
+                      <p
+                        class="hint"
+                        id="fromStopHint"
+                        data-i18n="booking.hint.pickup"
+                      >
+                        Start typing “Hauptbahnhof”, “JKU”, “solarCity”… and select a
+                        suggestion.
+                      </p>
+                      <div class="map-link-row">
+                        <a
+                          id="fromStopMapLink"
+                          class="map-link"
+                          href="#"
+                          target="_blank"
+                          rel="noopener"
+                          hidden
+                          data-i18n="booking.map.view"
+                        >
+                          View on Google Maps
+                        </a>
+                      </div>
+                      <input type="hidden" id="fromStopId" name="fromStopId" />
+                    </div>
+
+                    <div class="field">
+                      <label for="toStopName">
+                        <span data-i18n="booking.label.destination"
+                          >Destination stop / place</span
+                        ><span aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="toStopName"
+                        name="toStopName"
+                        list="toStopList"
+                        autocomplete="off"
+                        aria-describedby="toStopHint"
+                        required
+                      />
+                      <datalist id="toStopList"></datalist>
+                      <p
+                        class="hint"
+                        id="toStopHint"
+                        data-i18n="booking.hint.destination"
+                      >
+                        Start typing your destination and pick one of the suggestions.
+                      </p>
+                      <div class="map-link-row">
+                        <a
+                          id="toStopMapLink"
+                          class="map-link"
+                          href="#"
+                          target="_blank"
+                          rel="noopener"
+                          hidden
+                          data-i18n="booking.map.view"
+                        >
+                          View on Google Maps
+                        </a>
+                      </div>
+                      <input type="hidden" id="toStopId" name="toStopId" />
+                    </div>
+
+                    <div class="field field-inline">
+                      <div>
+                        <label for="date">
+                          <span data-i18n="booking.label.date">Date</span
+                          ><span aria-hidden="true">*</span>
+                        </label>
+                        <input id="date" name="date" type="date" required />
+                      </div>
+                      <div>
+                        <label for="time">
+                          <span data-i18n="booking.label.time">Pickup time</span
+                          ><span aria-hidden="true">*</span>
+                        </label>
+                        <input id="time" name="time" type="time" required />
+                      </div>
+                    </div>
+                  </fieldset>
                 </div>
 
-                <div class="field field-inline">
-                  <div>
-                    <label for="date">
-                      <span data-i18n="booking.label.date">Date</span
-                      ><span aria-hidden="true">*</span>
-                    </label>
-                    <input id="date" name="date" type="date" required />
-                  </div>
-                  <div>
-                    <label for="time">
-                      <span data-i18n="booking.label.time">Pickup time</span
-                      ><span aria-hidden="true">*</span>
-                    </label>
-                    <input id="time" name="time" type="time" required />
-                  </div>
-                </div>
-              </fieldset>
+                <div class="form-step" data-step="3" hidden>
+                  <fieldset>
+                    <legend data-i18n="booking.legend.accessibility">
+                      Accessibility needs
+                    </legend>
+                    <div class="field">
+                      <label
+                        for="wheelchairCount"
+                        data-i18n="booking.label.wheelchairCount"
+                        >Number of wheelchair users</label
+                      >
+                      <input
+                        id="wheelchairCount"
+                        name="wheelchairCount"
+                        type="number"
+                        min="0"
+                        max="4"
+                        value="1"
+                      />
+                    </div>
 
-              <fieldset>
-                <legend data-i18n="booking.legend.accessibility">
-                  Accessibility needs
-                </legend>
-                <div class="field">
-                  <label
-                    for="wheelchairCount"
-                    data-i18n="booking.label.wheelchairCount"
-                    >Number of wheelchair users</label
-                  >
-                  <input
-                    id="wheelchairCount"
-                    name="wheelchairCount"
-                    type="number"
-                    min="0"
-                    max="4"
-                    value="1"
-                  />
-                </div>
+                    <div class="field">
+                      <label
+                        for="assistanceLevel"
+                        data-i18n="booking.label.assistanceLevel"
+                        >Assistance level</label
+                      >
+                      <select id="assistanceLevel" name="assistanceLevel">
+                        <option
+                          value="standard"
+                          data-i18n="booking.option.assistance.standard"
+                        >
+                          Standard – ramp and secure space
+                        </option>
+                        <option
+                          value="extra_time"
+                          data-i18n="booking.option.assistance.extraTime"
+                        >
+                          Extra time for boarding / alighting
+                        </option>
+                        <option
+                          value="with_assistant"
+                          data-i18n="booking.option.assistance.withAssistant"
+                        >
+                          Needs driver to assist with wheelchair
+                        </option>
+                      </select>
+                    </div>
 
-                <div class="field">
-                  <label
-                    for="assistanceLevel"
-                    data-i18n="booking.label.assistanceLevel"
-                    >Assistance level</label
-                  >
-                  <select id="assistanceLevel" name="assistanceLevel">
-                    <option
-                      value="standard"
-                      data-i18n="booking.option.assistance.standard"
-                    >
-                      Standard – ramp and secure space
-                    </option>
-                    <option
-                      value="extra_time"
-                      data-i18n="booking.option.assistance.extraTime"
-                    >
-                      Extra time for boarding / alighting
-                    </option>
-                    <option
-                      value="with_assistant"
-                      data-i18n="booking.option.assistance.withAssistant"
-                    >
-                      Needs driver to assist with wheelchair
-                    </option>
-                  </select>
+                    <div class="field">
+                      <label
+                        for="notes"
+                        data-i18n="booking.label.notes"
+                        >Additional notes for the driver</label
+                      >
+                      <textarea
+                        id="notes"
+                        name="notes"
+                        rows="3"
+                        placeholder="E.g. service dog, oxygen equipment, transfer requirements…"
+                      ></textarea>
+                    </div>
+                  </fieldset>
                 </div>
-
-                <div class="field">
-                  <label
-                    for="notes"
-                    data-i18n="booking.label.notes"
-                    >Additional notes for the driver</label
-                  >
-                  <textarea
-                    id="notes"
-                    name="notes"
-                    rows="3"
-                    placeholder="E.g. service dog, oxygen equipment, transfer requirements…"
-                  ></textarea>
-                </div>
-              </fieldset>
+              </div>
 
               <div class="form-actions">
-                <button
-                  type="submit"
-                  id="submitBooking"
-                  data-i18n="booking.submit"
-                >
-                  Book accessible ride
-                </button>
+                <div class="step-nav-buttons">
+                  <button
+                    type="button"
+                    id="prevStep"
+                    class="secondary-button"
+                    data-i18n="booking.stepPrev"
+                    hidden
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="button"
+                    id="nextStep"
+                    class="primary-button"
+                    data-i18n="booking.stepNext"
+                  >
+                    Next step
+                  </button>
+                  <button
+                    type="submit"
+                    id="submitBooking"
+                    class="primary-button"
+                    data-i18n="booking.submit"
+                    hidden
+                  >
+                    Book accessible ride
+                  </button>
+                </div>
                 <p
                   id="formMessage"
                   class="form-message"
